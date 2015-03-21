@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:foursquare="http://www.mulesoft.org/schema/mule/foursquare" xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:oauth2="http://www.mulesoft.org/schema/mule/oauth2" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:data-mapper="http://www.mulesoft.org/schema/mule/ee/data-mapper" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.6.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/oauth2 http://www.mulesoft.org/schema/mule/oauth2/current/mule-oauth2.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schema/mule/ee/data-mapper/current/mule-data-mapper.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/foursquare http://www.mulesoft.org/schema/mule/foursquare/current/mule-foursquare.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd">
+    <http:listener-config name="HTTP_Listener_Configuration" host="0.0.0.0" port="8096"  doc:name="HTTP Listener Configuration"/>
+    <foursquare:config name="Foursquare" AccessToken="WRGHOVGNCP1HTSEB1DXTLHLDBL34UK153YEVJZYRW3AFIRI0&amp;v=20150319" Client_ID="s" Client_Secret="s" Callback_URL="s" doc:name="Foursquare"/>
+    <flow name="fetch4squareFlow">
+    	
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/Search" doc:name="HTTP"/>
+        
+        <foursquare:search-venues config-ref="Foursquare" lat="#[message.inboundProperties.'http.query.params'.lat]" lng="#[message.inboundProperties.'http.query.params'.lng]" query="#[message.inboundProperties.'http.query.params'.query]" doc:name="Foursquare"/>
+        
+        <set-property propertyName="Access-Control-Allow-Origin" value="*" doc:name="Property" />
+        <json:object-to-json-transformer doc:name="Object to JSON"/>
+    </flow>
+</mule>
